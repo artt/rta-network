@@ -21,6 +21,14 @@ function getTotalGDP(neighborsSet) {
 	return Array.from(neighborsSet).map(country => country.gdp).reduce((a, b) => a + b, 0)
 }
 
+function getNumRTAs(linkArray) {
+	let allRTAs = new Set()
+	linkArray.forEach(link => {
+		allRTAs = new Set([...allRTAs, ...link.rtas])
+	})
+	return allRTAs.size
+}
+
 function Graph({ size }) {
 
 	const fgRef = React.useRef();
@@ -188,11 +196,19 @@ function Graph({ size }) {
 			{graphLoaded && hoverNode &&
 				<div className="control-panel">
 					<div>{getFlagFromAlpha2(hoverNode.alpha2)} {hoverNode.name}</div>
-					<div>Neighbors: {hoverNode.neighbors
-						? <React.Fragment>
-								{hoverNode.neighbors.size} (combined GDP = {((getTotalGDP(hoverNode.neighbors)) * 1e-12).toFixed(2)} trillion GK$)
-							</React.Fragment>
-						: 0}	
+					<div className="details">
+						<div>RTAs: {hoverNode.neighbors
+							? <React.Fragment>
+									{getNumRTAs(hoverNode.links)}
+								</React.Fragment>
+							: 0}
+						</div>
+						<div>Neighbors: {hoverNode.neighbors
+							? <React.Fragment>
+									{hoverNode.neighbors.size} (combined GDP = {((getTotalGDP(hoverNode.neighbors)) * 1e-12).toFixed(2)} trillion GK$)
+								</React.Fragment>
+							: 0}	
+						</div>
 					</div>
 					<button className="clear-button" onClick={clearSelection}>Clear</button>
 				</div>

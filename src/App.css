@@ -23,3 +23,8 @@
 .clear-button {
 	margin-top: 12px;
 }
+
+.details {
+	font-size: 0.8rem;
+	color: lightgrey;
+}
