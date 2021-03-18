@@ -1,6 +1,7 @@
 import React from "react"
 import ForceGraph3D from "react-force-graph-3d"
 import orgData from "./data.json"
+import { use100vh } from "react-div-100vh"
 // import rtas from "./rtas.json"
 import { forceX, forceY, forceZ } from 'd3-force-3d'
 import * as THREE from 'three'
@@ -32,6 +33,8 @@ function getNumRTAs(linkArray) {
 function Graph({ size }) {
 
 	const fgRef = React.useRef();
+
+  const fullHeight = use100vh() || size.height
 
 	const data = React.useMemo(() => {
 		for (const [key, link] of Object.entries(orgData.links)) {
@@ -177,7 +180,7 @@ function Graph({ size }) {
 			<ForceGraph3D
 				ref={fgRef}
 				width={size.width}
-				height={size.height}
+				height={fullHeight}
 				graphData={{nodes: Object.values(data.nodes), links: Object.values(data.links)}}
 				nodeVal={node => inverseSphereVolume(node.gdp*1e-9)}
 				enableNodeDrag={false}
