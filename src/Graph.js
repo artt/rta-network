@@ -12,6 +12,14 @@ import { withSize } from 'react-sizeme'
 // 	const b = (number & 0x0000ff);
 // 	return `rgba(${b},${g},${r},${alpha})`;
 // }
+// 
+function getFlagFromAlpha2(alpha2) {
+	return alpha2.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0)+127397))
+}
+
+function getTotalGDP(neighborsSet) {
+	return Array.from(neighborsSet).map(country => country.gdp).reduce((a, b) => a + b, 0)
+}
 
 function Graph({ size }) {
 
@@ -74,7 +82,7 @@ function Graph({ size }) {
 		fgRef.current.d3Force('centerZ', forceZ(0));
 		// fgRef.current.d3Force('link').strength(2);
 		// fgRef.current.d3Force('link').distance(link => 100 / link.rtas.length);
-		fgRef.current.d3Force('charge').strength(-200);
+		fgRef.current.d3Force('charge').strength(-150);
 		// fgRef.current.d3Force('collision', forceCollide(80))
 	}, [graphLoaded]);
 
@@ -98,7 +106,7 @@ function Graph({ size }) {
 
 			case 'Western Asia': return 0x9cbf5a
 			case 'Southern Asia': return 0xFF9933
-			case 'Central Asia': return 0x8d4eba
+			case 'Central Asia': return 0xd92e72
 			case 'Eastern Asia': return 0xAA381E
 			case 'South-eastern Asia': return 0x8b30bf
 
@@ -123,7 +131,7 @@ function Graph({ size }) {
 				return `rgba(180, 180, 180, 0.1)`
 			}
 		}
-		return `rgba(255, 255, 255, 0.1)`
+		return `rgba(255, 255, 255, 0.15)`
 	}
 
 	function drawNode(node) {
@@ -179,12 +187,14 @@ function Graph({ size }) {
 			/>
 			{graphLoaded && hoverNode &&
 				<div className="control-panel">
-					<div>{hoverNode.alpha2.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0)+127397))} {hoverNode.name}</div>
+					<div>{getFlagFromAlpha2(hoverNode.alpha2)} {hoverNode.name}</div>
 					<div>Neighbors: {hoverNode.neighbors
-						? <React.Fragment>{hoverNode.neighbors.size} (combined GDP = {((Array.from(hoverNode.neighbors).map(country => country.gdp).reduce((a, b) => a + b, 0)) * 1e-12).toFixed(2)} trillion GK$)</React.Fragment>
+						? <React.Fragment>
+								{hoverNode.neighbors.size} (combined GDP = {((getTotalGDP(hoverNode.neighbors)) * 1e-12).toFixed(2)} trillion GK$)
+							</React.Fragment>
 						: 0}	
 					</div>
-					<div onClick={clearSelection}>Clear Selection</div>
+					<button className="clear-button" onClick={clearSelection}>Clear</button>
 				</div>
 			}
 		</div>
