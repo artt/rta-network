@@ -11,7 +11,9 @@
     "react-dom": "^17.0.1",
     "react-force-graph-2d": "^1.22.1",
     "react-force-graph-3d": "^1.19.2",
+    "react-github-corner": "^2.5.0",
     "react-scripts": "4.0.3",
+    "react-sizeme": "^3.0.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

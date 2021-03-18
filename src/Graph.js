@@ -1,19 +1,19 @@
 import React from "react"
-import ForceGraph2D from "react-force-graph-2d"
 import ForceGraph3D from "react-force-graph-3d"
 import orgData from "./data.json"
-import rtas from "./rtas.json"
-import { forceX, forceY, forceZ, forceCollide } from 'd3-force-3d'
+// import rtas from "./rtas.json"
+import { forceX, forceY, forceZ } from 'd3-force-3d'
 import * as THREE from 'three'
+import { withSize } from 'react-sizeme'
 
-function numberToColor(number, alpha=1) {
- const r = (number & 0xff0000) >> 16;
- const g = (number & 0x00ff00) >> 8;
- const b = (number & 0x0000ff);
- return `rgba(${b},${g},${r},${alpha})`;
-}
+// function numberToColor(number, alpha=1) {
+// 	const r = (number & 0xff0000) >> 16;
+// 	const g = (number & 0x00ff00) >> 8;
+// 	const b = (number & 0x0000ff);
+// 	return `rgba(${b},${g},${r},${alpha})`;
+// }
 
-export default function Graph() {
+function Graph({ size }) {
 
 	const fgRef = React.useRef();
 
@@ -23,40 +23,49 @@ export default function Graph() {
 			const b = orgData.nodes[link.target] || orgData.nodes[link.target.id]
 			// if (a == undefined || b == undefined)
 			// 	return {nodes: [], links: []}
-		  !a.neighbors && (a.neighbors = []);
-		  !b.neighbors && (b.neighbors = []);
-		  a.neighbors.push(b);
-		  b.neighbors.push(a);
+			!a.neighbors && (a.neighbors = new Set());
+			!b.neighbors && (b.neighbors = new Set());
+			a.neighbors.add(b);
+			b.neighbors.add(a);
 
-		  !a.links && (a.links = []);
-		  !b.links && (b.links = []);
-		  a.links.push(link);
-		  b.links.push(link);
+			!a.links && (a.links = []);
+			!b.links && (b.links = []);
+			a.links.push(link);
+			b.links.push(link);
 		}
 		return orgData
 	}, [])
 
 	const [highlightNodes, setHighlightNodes] = React.useState(new Set());
-  const [highlightLinks, setHighlightLinks] = React.useState(new Set());
-  const [hoverNode, setHoverNode] = React.useState(null);
+	const [highlightLinks, setHighlightLinks] = React.useState(new Set());
+	const [hoverNode, setHoverNode] = React.useState(null);
+	const [graphLoaded, setGraphLoaded] = React.useState(false);
 
-  const [nodeClicked, setNodeClicked] = React.useState(null)
-	const [nodeX, setNodeX] = React.useState(null)
+	const handleNodeClick = node => {
+		highlightNodes.clear();
+		highlightLinks.clear();
+		if (node) {
+			highlightNodes.add(node);
+			node.neighbors && node.neighbors.forEach(neighbor => highlightNodes.add(neighbor));
+			node.links && node.links.forEach(link => highlightLinks.add(link));
+		}
 
-  const handleNodeClick = node => {
-    highlightNodes.clear();
-    highlightLinks.clear();
-    if (node) {
-      highlightNodes.add(node);
-      node.neighbors && node.neighbors.forEach(neighbor => highlightNodes.add(neighbor));
-      node.links && node.links.forEach(link => highlightLinks.add(link));
-    }
+		setHoverNode(node || null);
+		// fgRef.current.refresh()
+		setHighlightNodes(highlightNodes);
+		setHighlightLinks(highlightLinks);
 
-    setHoverNode(node || null);
-    // fgRef.current.refresh()
-    setHighlightNodes(highlightNodes);
-    setHighlightLinks(highlightLinks);
-  };
+		highlightLinks.forEach(link => {
+			// console.log(link.target)
+			// console.log(node)
+			if (link.target === node) {
+				const tmp = link.target
+				link.target = link.source
+				link.source = tmp
+			}
+			// fgRef.current.emitParticle(link)
+		})
+	};
 
 	React.useEffect(() => {
 		// add collision force
@@ -67,7 +76,7 @@ export default function Graph() {
 		// fgRef.current.d3Force('link').distance(link => 100 / link.rtas.length);
 		fgRef.current.d3Force('charge').strength(-200);
 		// fgRef.current.d3Force('collision', forceCollide(80))
-	}, []);
+	}, [graphLoaded]);
 
 	function inverseSphereVolume(vol) {
 		// v = 4/3 pi r^3 => r = (3/4pi v)^(1/3)
@@ -98,13 +107,17 @@ export default function Graph() {
 			case 'Melanesia': return 0x48D1CC
 			case 'Micronesia': return 0x48D1CC
 			case 'Antarctica': return 0x48D1CC
+			default: return 0x666666
 		}
 	}
 
 	function getLinkColor(link) {
 		if (hoverNode !== null) {
 			if (highlightLinks.has(link)) {
-				return `rgba(255, 255, 255, 0.8)`
+				// if (link.source.subregion === link.target.subregion)
+				// 	return 0xffffff
+				return getColorFromSubregion(link.target.subregion)
+				// return `rgba(255, 255, 255, 0.8)`
 			}
 			else {
 				return `rgba(180, 180, 180, 0.1)`
@@ -134,32 +147,48 @@ export default function Graph() {
 		)
 	}
 
-	function handleCanvasClick() {
-		console.log('xxx')
-		// handleNodeClick(nodeX)
+	function clearSelection() {
+		setHoverNode(null)
+		highlightNodes.clear()
+		highlightLinks.clear()
 	}
 
-	function handleHover(node) {
-		setNodeX(node)
-	}
+	console.log(hoverNode)
 
-
-	return(data &&
-		<div onClick={handleCanvasClick}>
+	return(
+		<div id="canvas">
+			{!graphLoaded && <div className="center full">Loading RTAs...</div>}
 			<ForceGraph3D
 				ref={fgRef}
-		    graphData={{nodes: Object.values(data.nodes), links: Object.values(data.links)}}
-		    nodeVal={node => inverseSphereVolume(node.gdp*1e-9)}
-		    enableNodeDrag={false}
-		    // nodeColor={getNodeColor}
-		    nodeThreeObject={drawNode}
-		    linkColor={getLinkColor}
-		    // linkWidth={link => highlightLinks.has(link) ? 2 : 0}
-		    linkOpacity={1}
-		    nodeOpacity={1}
-		    onNodeClick={handleNodeClick}
-		    onKeyPress={e => console.log(e.key)}
-		  />
+				width={size.width}
+				height={size.height}
+				graphData={{nodes: Object.values(data.nodes), links: Object.values(data.links)}}
+				nodeVal={node => inverseSphereVolume(node.gdp*1e-9)}
+				enableNodeDrag={false}
+				// nodeColor={getNodeColor}
+				nodeThreeObject={drawNode}
+				linkColor={getLinkColor}
+				// linkWidth={link => highlightLinks.has(link) ? 2 : 0}
+				linkOpacity={1}
+				nodeOpacity={1}
+				onNodeClick={handleNodeClick}
+				onEngineTick={() => setGraphLoaded(true)}
+				linkDirectionalParticleWidth={2}
+				linkDirectionalParticles={link => highlightLinks.has(link) ? 3 : 0}
+				// linkDirectionalParticleColor={link => getColorFromSubregion(link.source.subregion)}
+			/>
+			{graphLoaded && hoverNode &&
+				<div className="control-panel">
+					<div>{hoverNode.alpha2.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0)+127397))} {hoverNode.name}</div>
+					<div>Neighbors: {hoverNode.neighbors
+						? <React.Fragment>{hoverNode.neighbors.size} (combined GDP = {((Array.from(hoverNode.neighbors).map(country => country.gdp).reduce((a, b) => a + b, 0)) * 1e-12).toFixed(2)} trillion GK$)</React.Fragment>
+						: 0}	
+					</div>
+					<div onClick={clearSelection}>Clear Selection</div>
+				</div>
+			}
 		</div>
-  )
+	)
 }
+
+export default withSize({ monitorHeight: true })(Graph)
