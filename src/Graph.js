@@ -208,7 +208,7 @@ function Graph({ size }) {
 						</div>
 						<div>Neighbors: {hoverNode.neighbors
 							? <React.Fragment>
-									{hoverNode.neighbors.size} (combined GDP = {((getTotalGDP(hoverNode.neighbors)) * 1e-12).toFixed(2)} trillion GK$)
+									{hoverNode.neighbors.size} ({((getTotalGDP(hoverNode.neighbors) + hoverNode.gdp) / data.total_gdp * 100).toFixed(2)}% of World GDP, including itself)
 								</React.Fragment>
 							: 0}	
 						</div>
