@@ -6,6 +6,7 @@ import { use100vh } from "react-div-100vh"
 import { forceX, forceY, forceZ } from 'd3-force-3d'
 import * as THREE from 'three'
 import { withSize } from 'react-sizeme'
+import Search from './Search'
 
 // function numberToColor(number, alpha=1) {
 // 	const r = (number & 0xff0000) >> 16;
@@ -54,6 +55,11 @@ function Graph({ size }) {
 		}
 		return orgData
 	}, [])
+
+	let countriesList = []
+	for (const [key, value] of Object.entries(orgData.nodes)) {
+		countriesList.push({value: key, label: value.name})
+	}
 
 	const [highlightNodes, setHighlightNodes] = React.useState(new Set());
 	const [highlightLinks, setHighlightLinks] = React.useState(new Set());
@@ -172,8 +178,6 @@ function Graph({ size }) {
 		highlightLinks.clear()
 	}
 
-	console.log(hoverNode)
-
 	return(
 		<div id="canvas">
 			{!graphLoaded && <div className="center full">Loading RTAs...</div>}
@@ -196,8 +200,11 @@ function Graph({ size }) {
 				linkDirectionalParticles={link => highlightLinks.has(link) ? 3 : 0}
 				// linkDirectionalParticleColor={link => getColorFromSubregion(link.source.subregion)}
 			/>
+			{graphLoaded &&
+				<Search countriesList={countriesList} />
+			}
 			{graphLoaded && hoverNode &&
-				<div className="control-panel">
+				<div className="bottom-panel">
 					<div>{getFlagFromAlpha2(hoverNode.alpha2)} {hoverNode.name}</div>
 					<div className="details">
 						<div>RTAs: {hoverNode.neighbors
