@@ -210,7 +210,7 @@ function Graph({ size }) {
 							? <React.Fragment>
 									{hoverNode.neighbors.size} ({((getTotalGDP(hoverNode.neighbors) + hoverNode.gdp) / data.total_gdp * 100).toFixed(2)}% of World GDP, including itself)
 								</React.Fragment>
-							: 0}	
+							: 0}
 						</div>
 					</div>
 					<button className="clear-button" onClick={clearSelection}>Clear</button>
