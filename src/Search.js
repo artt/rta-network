@@ -1,40 +1,52 @@
 import React from "react"
 // import Select, { createFilter } from 'react-select'
-import Select from 'react-windowed-select'
+// import Select from 'react-windowed-select'
+import Autosuggest from 'react-autosuggest';
 
 export default function Search({ curValue, countriesList, onSelect }) {
 
-  const backgroundColor = '#222222'
-  const defaultStyle = {color: 'white', backgroundColor: backgroundColor}
+  const [suggestions, setSuggestions] = React.useState([])
+  const [value, setValue] = React.useState("")
 
-  const colorStyles = {
-    control: styles => ({ ...styles, ...defaultStyle }),
-    singleValue: styles => ({ ...styles, ...defaultStyle }),
-    input: styles => ({ ...styles, ...defaultStyle }),
-    menuList: styles => ({ ...styles, ...defaultStyle }),
-    option: (styles, { isFocused, isSelected }) => ({ ...styles, color: 'white', backgroundColor: isFocused ? '#444' : isSelected ? '#206352' : null }),
-    dropdownIndicator: (styles, f) => {
-      // console.log(f)
-      return({ ...styles, color: 'white', backgroundColor: backgroundColor })
-    },
+  function getSuggestions(v) {
+    console.log(countriesList)
+    if (v.value.length === 0) {
+      return []
+    }
+    else {
+      return countriesList.filter(c => c.label.toLowerCase().includes(v.value.toLowerCase()))
+    }
+  }
+
+  function renderSuggestion(v) {
+    return(
+      <div>
+        {v.label}
+      </div>
+    )
+  }
+
+  function handleSelect(event, { suggestion, suggestionValue }) {
+    console.log(suggestion, suggestionValue)
+    onSelect(suggestion)
+  }
+
+  const inputProps = {
+    placeholder: 'Search...',
+    value,
+    onChange: (event, { newValue }) => setValue(newValue)
   };
 
   return(
     <div className="search">
-      <Select
-        value={curValue}
-        options={countriesList}
-        // filterOption={createFilter({ignoreAccents: false})}
-        styles={colorStyles}
-        theme={theme => ({
-          ...theme,
-          colors: {
-            ...theme.colors,
-            primary: '#20635d',
-            primary50: "#339e8b",
-          },
-        })}
-        onChange={onSelect}
+      <Autosuggest
+        suggestions={suggestions}
+        onSuggestionsFetchRequested={v => setSuggestions(getSuggestions(v))}
+        onSuggestionsClearRequested={() => setSuggestions([])}
+        getSuggestionValue={suggestion => suggestion.label}
+        renderSuggestion={renderSuggestion}
+        inputProps={inputProps}
+        onSuggestionSelected={handleSelect}
       />
     </div>
   )
