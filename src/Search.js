@@ -1,5 +1,5 @@
 import React from "react"
-import Select from 'react-select'
+import Select, { createFilter } from 'react-select'
 
 export default function Search({ countriesList }) {
 
@@ -11,7 +11,7 @@ export default function Search({ countriesList }) {
     option: (styles, { isFocused, isSelected }) => ({ ...styles, color: 'white', backgroundColor: isFocused ? '#444' : isSelected ? '#206352' : null }),
     input: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
     dropdownIndicator: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
-    menuList: styles => ({ ...styles, color: 'red', backgroundColor: backgroundColor }),
+    menuList: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
   };
 
   const searchOptions = [
@@ -20,7 +20,22 @@ export default function Search({ countriesList }) {
 
   return(
     <div className="search">
-      <Select options={searchOptions} styles={colorStyles} />
+      <Select
+        options={searchOptions}
+        filterOption={createFilter({ignoreAccents: false})}
+        styles={colorStyles}
+        theme={theme => ({
+          ...theme,
+          // borderRadius: 0,
+          colors: {
+            ...theme.colors,
+            primary: '#20635d',
+            primary25: "#222222",
+            primary50: "#339e8b",
+            primary75: "#3dbca5",
+          },
+        })}
+      />
     </div>
   )
 

@@ -92,16 +92,12 @@ function Graph({ size }) {
 		})
 	};
 
-	React.useEffect(() => {
-		// add collision force
-		fgRef.current.d3Force('centerX', forceX(0));
-		fgRef.current.d3Force('centerY', forceY(0));
-		fgRef.current.d3Force('centerZ', forceZ(0));
-		// fgRef.current.d3Force('link').strength(2);
-		// fgRef.current.d3Force('link').distance(link => 100 / link.rtas.length);
-		fgRef.current.d3Force('charge').strength(-150);
-		// fgRef.current.d3Force('collision', forceCollide(80))
-	}, [graphLoaded]);
+	// React.useEffect(() => {
+	// 	fgRef.current.d3Force('centerX', forceX(0));
+	// 	fgRef.current.d3Force('centerY', forceY(0));
+	// 	fgRef.current.d3Force('centerZ', forceZ(0));
+	// 	fgRef.current.d3Force('charge').strength(-150);
+	// }, [graphLoaded]);
 
 	function inverseSphereVolume(vol) {
 		// v = 4/3 pi r^3 => r = (3/4pi v)^(1/3)
@@ -181,7 +177,7 @@ function Graph({ size }) {
 	return(
 		<div id="canvas">
 			{!graphLoaded && <div className="center full">Loading RTAs...</div>}
-			<ForceGraph3D
+			{/* <ForceGraph3D
 				ref={fgRef}
 				width={size.width}
 				height={fullHeight}
@@ -199,8 +195,8 @@ function Graph({ size }) {
 				linkDirectionalParticleWidth={2}
 				linkDirectionalParticles={link => highlightLinks.has(link) ? 3 : 0}
 				// linkDirectionalParticleColor={link => getColorFromSubregion(link.source.subregion)}
-			/>
-			{graphLoaded &&
+			/> */}
+			{true &&
 				<Search countriesList={countriesList} />
 			}
 			{graphLoaded && hoverNode &&
