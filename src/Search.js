@@ -1,38 +1,36 @@
 import React from "react"
-import Select, { createFilter } from 'react-select'
+// import Select, { createFilter } from 'react-select'
+import Select from 'react-windowed-select'
 
 export default function Search({ countriesList }) {
 
   const backgroundColor = '#222222'
+  const defaultStyle = {color: 'white', backgroundColor: backgroundColor}
 
   const colorStyles = {
-    control: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
-    singleValue: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
+    control: styles => ({ ...styles, ...defaultStyle }),
+    singleValue: styles => ({ ...styles, ...defaultStyle }),
+    input: styles => ({ ...styles, ...defaultStyle }),
+    menuList: styles => ({ ...styles, ...defaultStyle }),
     option: (styles, { isFocused, isSelected }) => ({ ...styles, color: 'white', backgroundColor: isFocused ? '#444' : isSelected ? '#206352' : null }),
-    input: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
-    dropdownIndicator: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
-    menuList: styles => ({ ...styles, color: 'white', backgroundColor: backgroundColor }),
+    dropdownIndicator: (styles, f) => {
+      console.log(f)
+      return({ ...styles, color: 'white', backgroundColor: backgroundColor })
+    },
   };
-
-  const searchOptions = [
-    {label: 'Countries', options: countriesList}
-  ]
 
   return(
     <div className="search">
       <Select
-        options={searchOptions}
-        filterOption={createFilter({ignoreAccents: false})}
+        options={countriesList}
+        // filterOption={createFilter({ignoreAccents: false})}
         styles={colorStyles}
         theme={theme => ({
           ...theme,
-          // borderRadius: 0,
           colors: {
             ...theme.colors,
             primary: '#20635d',
-            primary25: "#222222",
             primary50: "#339e8b",
-            primary75: "#3dbca5",
           },
         })}
       />

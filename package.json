@@ -17,6 +17,7 @@
     "react-select": "^4.3.0",
     "react-sizeme": "^3.0.1",
     "react-window": "^1.8.6",
+    "react-windowed-select": "^3.0.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
