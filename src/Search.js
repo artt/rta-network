@@ -2,7 +2,7 @@ import React from "react"
 // import Select, { createFilter } from 'react-select'
 import Select from 'react-windowed-select'
 
-export default function Search({ countriesList }) {
+export default function Search({ curValue, countriesList, onSelect }) {
 
   const backgroundColor = '#222222'
   const defaultStyle = {color: 'white', backgroundColor: backgroundColor}
@@ -14,7 +14,7 @@ export default function Search({ countriesList }) {
     menuList: styles => ({ ...styles, ...defaultStyle }),
     option: (styles, { isFocused, isSelected }) => ({ ...styles, color: 'white', backgroundColor: isFocused ? '#444' : isSelected ? '#206352' : null }),
     dropdownIndicator: (styles, f) => {
-      console.log(f)
+      // console.log(f)
       return({ ...styles, color: 'white', backgroundColor: backgroundColor })
     },
   };
@@ -22,6 +22,7 @@ export default function Search({ countriesList }) {
   return(
     <div className="search">
       <Select
+        value={curValue}
         options={countriesList}
         // filterOption={createFilter({ignoreAccents: false})}
         styles={colorStyles}
@@ -33,6 +34,7 @@ export default function Search({ countriesList }) {
             primary50: "#339e8b",
           },
         })}
+        onChange={onSelect}
       />
     </div>
   )

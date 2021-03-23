@@ -38,7 +38,7 @@ function Graph({ size }) {
   const fullHeight = use100vh() || size.height
 
 	const data = React.useMemo(() => {
-		for (const [key, link] of Object.entries(orgData.links)) {
+		for (const [, link] of Object.entries(orgData.links)) {
 			const a = orgData.nodes[link.source] || orgData.nodes[link.source.id]
 			const b = orgData.nodes[link.target] || orgData.nodes[link.target.id]
 			// if (a == undefined || b == undefined)
@@ -67,6 +67,7 @@ function Graph({ size }) {
 	const [graphLoaded, setGraphLoaded] = React.useState(false);
 
 	const handleNodeClick = node => {
+		console.log(node)
 		highlightNodes.clear();
 		highlightLinks.clear();
 		if (node) {
@@ -92,15 +93,14 @@ function Graph({ size }) {
 		})
 	};
 
-	// React.useEffect(() => {
-	// 	fgRef.current.d3Force('centerX', forceX(0));
-	// 	fgRef.current.d3Force('centerY', forceY(0));
-	// 	fgRef.current.d3Force('centerZ', forceZ(0));
-	// 	fgRef.current.d3Force('charge').strength(-150);
-	// }, [graphLoaded]);
+	React.useEffect(() => {
+		fgRef.current.d3Force('centerX', forceX(0));
+		fgRef.current.d3Force('centerY', forceY(0));
+		fgRef.current.d3Force('centerZ', forceZ(0));
+		fgRef.current.d3Force('charge').strength(-150);
+	}, [graphLoaded]);
 
 	function inverseSphereVolume(vol) {
-		// v = 4/3 pi r^3 => r = (3/4pi v)^(1/3)
 		return Math.pow(3 / (4*Math.PI) * vol, 1/3)
 	}
 
@@ -174,30 +174,35 @@ function Graph({ size }) {
 		highlightLinks.clear()
 	}
 
+	function selectNodeFromSearch(node) {
+		handleNodeClick(data.nodes[node.value])
+	}
+
 	return(
 		<div id="canvas">
 			{!graphLoaded && <div className="center full">Loading RTAs...</div>}
-			{/* <ForceGraph3D
+			<ForceGraph3D
 				ref={fgRef}
 				width={size.width}
 				height={fullHeight}
 				graphData={{nodes: Object.values(data.nodes), links: Object.values(data.links)}}
 				nodeVal={node => inverseSphereVolume(node.gdp*1e-9)}
 				enableNodeDrag={false}
-				// nodeColor={getNodeColor}
 				nodeThreeObject={drawNode}
 				linkColor={getLinkColor}
-				// linkWidth={link => highlightLinks.has(link) ? 2 : 0}
 				linkOpacity={1}
 				nodeOpacity={1}
 				onNodeClick={handleNodeClick}
 				onEngineTick={() => setGraphLoaded(true)}
 				linkDirectionalParticleWidth={2}
 				linkDirectionalParticles={link => highlightLinks.has(link) ? 3 : 0}
-				// linkDirectionalParticleColor={link => getColorFromSubregion(link.source.subregion)}
-			/> */}
-			{true &&
-				<Search countriesList={countriesList} />
+			/>
+			{graphLoaded &&
+				<Search
+					curValue={hoverNode && {value: hoverNode.id, label: hoverNode.name}}
+					countriesList={countriesList}
+					onSelect={selectNodeFromSearch}
+				/>
 			}
 			{graphLoaded && hoverNode &&
 				<div className="bottom-panel">
