@@ -29,6 +29,18 @@ function App() {
   }, [])
 
   const [selection, setSelection] = React.useState("")
+	const fgRef = React.useRef();
+
+  function focusNode(event) {
+    const node = data.nodes[selection]
+    const distance = 800
+		const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z)
+		fgRef.current.cameraPosition(
+			{ x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+			{ x: 0, y: 0, z: 0 },
+			3000
+		)
+  }
 
   return (
     <div className="App">
@@ -36,12 +48,14 @@ function App() {
         data={data}
         selection={selection}
         setSelection={setSelection}
+        fgRef={fgRef}
       />
       <InfoBox
         data={data.nodes}
         worldGDP={orgData.total_gdp}
         selection={selection}
         setSelection={setSelection}
+        focusNode={focusNode}
       />
       <GithubCorner
       	href="https://github.com/artt/rta-network"

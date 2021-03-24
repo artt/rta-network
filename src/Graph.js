@@ -39,9 +39,7 @@ function getColorFromSubregion(subregion) {
 	}
 }
 
-function Graph({ data, selection, setSelection, size }) {
-
-	const fgRef = React.useRef();
+function Graph({ fgRef, data, selection, setSelection, size }) {
 
   const fullHeight = use100vh() || size.height
 
@@ -86,18 +84,11 @@ function Graph({ data, selection, setSelection, size }) {
 	React.useEffect(() => {
 		const node = data.nodes[selection]
 		handleNodeClick(node)
-		// const distance = 800
-		// const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z)
-		// fgRef.current.cameraPosition(
-		// 	{ x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
-		// 	{ x: 0, y: 0, z: 0 },
-		// 	3000
-		// )
 	}, [selection])
 
 	function handleNodeClick(node) {
 
-		console.log(node)
+		// console.log(node)
 		highlightNodes.clear();
 		highlightLinks.clear();
 		if (node) {
