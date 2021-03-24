@@ -1,11 +1,48 @@
 import './App.css';
+import React from 'react'
 import Graph from './Graph'
+import InfoBox from './InfoBox'
 import GithubCorner from 'react-github-corner';
+import orgData from "./data.json"
 
 function App() {
+
+  const data = React.useMemo(() => {
+    for (const [, link] of Object.entries(orgData.links)) {
+      const a = orgData.nodes[link.source] || orgData.nodes[link.source.id]
+      const b = orgData.nodes[link.target] || orgData.nodes[link.target.id]
+      // if (a == undefined || b == undefined)
+      // 	return {nodes: [], links: []}
+      !a.neighbors && (a.neighbors = new Set());
+      !b.neighbors && (b.neighbors = new Set());
+      a.neighbors.add(b);
+      b.neighbors.add(a);
+
+      !a.links && (a.links = []);
+      !b.links && (b.links = []);
+      a.links.push(link);
+      b.links.push(link);
+    }
+    // const friendSize = Object.entries(orgData.nodes).map(x => x[1]).map(y => (y.neighbors ? getTotalGDP(y.neighbors) + y.gdp : y.gdp) / orgData.total_gdp * 100 )
+    // console.log(friendSize.indexOf(Math.max(...friendSize)), Math.max(...friendSize))
+    return orgData
+  }, [])
+
+  const [selection, setSelection] = React.useState("")
+
   return (
     <div className="App">
-      <Graph />
+      <Graph
+        data={data}
+        selection={selection}
+        setSelection={setSelection}
+      />
+      <InfoBox
+        data={data.nodes}
+        worldGDP={orgData.total_gdp}
+        selection={selection}
+        setSelection={setSelection}
+      />
       <GithubCorner
       	href="https://github.com/artt/rta-network"
       	target="_blank"
