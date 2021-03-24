@@ -81,7 +81,7 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
     )
   }
 
-  const processedData = Object.values(data).map(node => ({id: node.id, name: node.name}))
+  const processedData = Object.values(data).map(node => ({id: node.id, name: node.name, alpha3: node.alpha3, region: node.region, subregion: node.subregion}))
 
   return(
     <div className="infobox">
@@ -111,7 +111,7 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
           // filterOptions={createFilterOptions({
           //   stringify: option => option.name
           // })}
-          filterOptions={(options, { inputValue }) => matchSorter(options, inputValue, {keys: ['name', 'id']})}
+          filterOptions={(options, { inputValue }) => matchSorter(options, inputValue, {keys: ['name', 'id', 'alpha3', 'region', 'subregion']})}
         />
         {selection && 
           <div className="details">
