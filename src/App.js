@@ -4,6 +4,7 @@ import Graph from './Graph'
 import InfoBox from './InfoBox'
 import GithubCorner from 'react-github-corner';
 import orgData from "./data.json"
+import orgRTAs from "./rtas.json"
 
 function App() {
 

@@ -113,7 +113,6 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
         />
         {selection && 
           <div className="details">
-            {/* <div>{getFlagFromAlpha2(hoverNode.alpha2)} {hoverNode.name}</div> */}
             <div>RTAs: {data[selection].neighbors
               ? <React.Fragment>
                   {getNumRTAs(data[selection].links)}
