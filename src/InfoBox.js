@@ -69,7 +69,11 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
             autoComplete: 'new-password', // disable autocomplete and autofill
           }}
         />
-        <IconButton aria-label="locate" disabled={value === null} onClick={focusNode}>
+        <IconButton
+          aria-label="locate"
+          disabled={value === null}
+          onClick={focusNode}
+        >
           <LocationSearchingIcon />
         </IconButton>
       </div>
@@ -85,7 +89,6 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
-            console.log(newValue)
             setSelection(newValue ? newValue.id : "")
           }}
           inputValue={inputValue}

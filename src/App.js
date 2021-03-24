@@ -31,8 +31,9 @@ function App() {
   const [selection, setSelection] = React.useState("")
 	const fgRef = React.useRef();
 
-  function focusNode(event) {
+  function focusNode() {
     const node = data.nodes[selection]
+    console.log(node)
     const distance = 800
 		const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z)
 		fgRef.current.cameraPosition(

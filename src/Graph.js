@@ -64,7 +64,7 @@ function Graph({ fgRef, data, selection, setSelection, size }) {
 			}
 		}
 		return new THREE.Mesh(
-			new THREE.SphereGeometry(inverseSphereVolume(node.gdp*1e-9) * 1.5, 16, 16),
+			new THREE.SphereGeometry(Math.max(inverseSphereVolume(node.gdp*1e-9), 1) * 1.5, 16, 16),
 			new THREE.MeshStandardMaterial( {color: color, opacity: opacity, transparent: true} )
 		)
 	}
