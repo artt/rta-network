@@ -1,6 +1,8 @@
 import React from "react"
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
+import IconButton from '@material-ui/core/IconButton';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -34,7 +36,7 @@ function getTotalGDP(node) {
 }
 
 
-export default function InfoBox({ data, worldGDP, selection, setSelection }) {
+export default function InfoBox({ data, worldGDP, selection, setSelection, focusNode }) {
 
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
@@ -49,7 +51,7 @@ export default function InfoBox({ data, worldGDP, selection, setSelection }) {
   function renderOption(option) {
     return(
       <React.Fragment>
-        {/* <span>{countryToFlag(option.code)}</span> */}
+        <span className="flag">{getFlagFromAlpha2(option.id)}</span>
         {option.name}
       </React.Fragment>
     )
@@ -57,15 +59,20 @@ export default function InfoBox({ data, worldGDP, selection, setSelection }) {
 
   function renderInput(params) {
     return(
-      <TextField
-        {...params}
-        label="Country"
-        color="secondary"
-        inputProps={{
-          ...params.inputProps,
-          autoComplete: 'new-password', // disable autocomplete and autofill
-        }}
-      />
+      <div className="search">
+        <TextField
+          {...params}
+          label="Country"
+          color="secondary"
+          inputProps={{
+            ...params.inputProps,
+            autoComplete: 'new-password', // disable autocomplete and autofill
+          }}
+        />
+        <IconButton aria-label="locate" disabled={value === null} onClick={focusNode}>
+          <LocationSearchingIcon />
+        </IconButton>
+      </div>
     )
   }
 

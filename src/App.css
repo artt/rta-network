@@ -20,6 +20,14 @@
   left: 20px;
 }
 
+.search {
+  display: flex;
+}
+
+.flag {
+  margin-right: 8px;
+}
+
 .details {
 	font-size: 0.8rem;
 	color: grey;
