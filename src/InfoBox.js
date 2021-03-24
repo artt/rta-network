@@ -131,6 +131,8 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
             }
           }}
           getOptionSelected={(option, value) => {
+            if (typeof value === "object")
+              value = value.id
             return option.id === value
           }}
           renderOption={renderOption}
