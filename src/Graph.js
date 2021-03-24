@@ -37,7 +37,7 @@ function getColorFromSubregion(subregion) {
 	}
 }
 
-function Graph({ fgRef, data, selection, setSelection, size }) {
+function Graph({ data, rtas, selection, setSelection, size, fgRef }) {
 
   const fullHeight = use100vh() || size.height
 
@@ -49,7 +49,7 @@ function Graph({ fgRef, data, selection, setSelection, size }) {
 	function drawNode(node) {
 		let color = getColorFromSubregion(node.subregion)
 		let opacity = 0.75
-		if (hoverNode) {
+		if (selection) {
 			if (hoverNode === node) {
 				color = 0xffffff
 				opacity = 1
@@ -68,9 +68,9 @@ function Graph({ fgRef, data, selection, setSelection, size }) {
 	}
 
 	function getLinkColor(link) {
-		if (hoverNode) {
+		if (selection) {
 			if (highlightLinks.has(link)) {
-				return getColorFromSubregion(link.target.subregion)
+				return selection.length > 2 ? 0xffffff : getColorFromSubregion(link.target.subregion)
 			}
 			else {
 				return `rgba(180, 180, 180, 0.1)`
@@ -80,9 +80,31 @@ function Graph({ fgRef, data, selection, setSelection, size }) {
 	}
 
 	React.useEffect(() => {
-		const node = data.nodes[selection]
-		handleNodeClick(node)
+		
+		if (selection.length > 2) {
+			// select RTA
+			handleRTASelect(parseInt(selection.slice(4)))
+		}
+		else {
+			const node = data.nodes[selection]
+			handleNodeClick(node)
+		}
 	}, [selection])
+
+	function handleRTASelect(rtaID) {
+		setHoverNode(null)
+		highlightNodes.clear();
+		highlightLinks.clear();
+		const countries = rtas[rtaID].countries
+		for (let i = 0; i < countries.length; i ++) {
+			highlightNodes.add(data.nodes[countries[i]])
+			for (let j = i + 1; j < countries.length; j ++) {
+				highlightLinks.add(data.links[countries[i] + '-' + countries[j]])
+			}
+		}
+		setHighlightNodes(highlightNodes);
+		setHighlightLinks(highlightLinks);
+	}
 
 	function handleNodeClick(node) {
 

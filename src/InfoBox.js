@@ -52,7 +52,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
   function renderOption(option) {
     return(
       <React.Fragment>
-        <span className="flag">{getFlagFromAlpha2(option.id)}</span>
+        {option.id.length === 2 && <span className="flag">{getFlagFromAlpha2(option.id)}</span>}
         {option.name}
       </React.Fragment>
     )
@@ -63,7 +63,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
       <div className="search">
         <TextField
           {...params}
-          label="Country"
+          label="Country or RTA"
           color="secondary"
           inputProps={{
             ...params.inputProps,
@@ -81,8 +81,22 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     )
   }
 
-  const processedCountries = 
-    Object.values(countries).map(node => ({id: node.id, name: node.name, alpha3: node.alpha3, region: node.region, subregion: node.subregion}))
+  const processedRTAs = rtas.map((rta, i) => ({
+    group: 'RTAs',
+    id: `RTA-${i}`,
+    name: rta.rta,
+    rtatype: rta.type,
+    index: i
+  }))
+
+  const processedCountries = Object.values(countries).map(node => ({
+    group: 'Countries',
+    id: node.id,
+    name: node.name,
+    alpha3: node.alpha3,
+    region: node.region,
+    subregion: node.subregion
+  }))
 
   return(
     <div className="infobox">
@@ -97,24 +111,34 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
           size="small"
           style={{ width: 300 }}
-          options={processedCountries}
+          // options={processedCountries}
+          options={processedCountries.concat(processedRTAs)}
+          groupBy={(option) => option.group}
           clearOnEscape
           autoSelect
           autoHighlight
-          getOptionLabel={(optionStr) => {
-            return countries[optionStr] ? countries[optionStr].name : ""
+          getOptionLabel={(option) => {
+            if (typeof option === "object")
+              option = option.id
+            if (option.length === 2)
+              return countries[option] ? countries[option].name : ""
+            else {
+              const rtaID = parseInt(option.slice(4))
+              return rtas[rtaID] ? rtas[rtaID].rta : ""
+            }
           }}
           getOptionSelected={(option, value) => {
             return option.id === value
           }}
           renderOption={renderOption}
           renderInput={renderInput}
-          // filterOptions={createFilterOptions({
-          //   stringify: option => option.name
-          // })}
-          filterOptions={(options, { inputValue }) => matchSorter(options, inputValue, {keys: ['name', 'id', 'alpha3', 'region', 'subregion']})}
+          filterOptions={(options, { inputValue }) => {
+            const rankCountries = matchSorter(options.filter(item => item.group === "Countries"), inputValue, {keys: ['name', 'id', 'alpha3']})
+            const rankRTAs = matchSorter(options.filter(item => item.group === "RTAs"), inputValue, {keys: ['name']})
+            return rankCountries.concat(rankRTAs)
+          }}
         />
-        {selection && 
+        {selection && selection.length === 2 &&
           <div className="details">
             <div>RTAs: {countries[selection].neighbors
               ? <React.Fragment>

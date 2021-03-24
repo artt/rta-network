@@ -48,6 +48,7 @@ function App() {
     <div className="App">
       <Graph
         data={data}
+        rtas={orgRTAs}
         selection={selection}
         setSelection={setSelection}
         fgRef={fgRef}
