@@ -203,13 +203,32 @@ function Graph({ size }) {
 				linkDirectionalParticles={link => highlightLinks.has(link) ? 3 : 0}
 			/>
 			{graphLoaded &&
-				<Search
-					curValue={hoverNode && {value: hoverNode.id, label: hoverNode.name}}
-					countriesList={countriesList}
-					onSelect={handleSelectNodeFromSearch}
-				/>
+				<div className="search">
+					<Search
+						curValue={hoverNode && {value: hoverNode.id, label: hoverNode.name}}
+						countriesList={countriesList}
+						onSelect={handleSelectNodeFromSearch}
+					/>
+					{hoverNode && 
+						<div className="details">
+							{/* <div>{getFlagFromAlpha2(hoverNode.alpha2)} {hoverNode.name}</div> */}
+							<div>RTAs: {hoverNode.neighbors
+								? <React.Fragment>
+										{getNumRTAs(hoverNode.links)}
+									</React.Fragment>
+								: 0}
+							</div>
+							<div>Neighbors: {hoverNode.neighbors
+								? <React.Fragment>
+										{hoverNode.neighbors.size} ({((getTotalGDP(hoverNode.neighbors) + hoverNode.gdp) / data.total_gdp * 100).toFixed(2)}% of World GDP, including itself)
+									</React.Fragment>
+								: 0}
+							</div>
+						</div>
+					}
+				</div>
 			}
-			{graphLoaded && hoverNode &&
+			{/* {graphLoaded && hoverNode &&
 				<div className="bottom-panel">
 					<div>{getFlagFromAlpha2(hoverNode.alpha2)} {hoverNode.name}</div>
 					<div className="details">
@@ -228,7 +247,7 @@ function Graph({ size }) {
 					</div>
 					<button className="clear-button" onClick={clearSelection}>Clear</button>
 				</div>
-			}
+			} */}
 		</div>
 	)
 }
