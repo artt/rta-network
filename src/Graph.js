@@ -53,6 +53,8 @@ function Graph({ size }) {
 			a.links.push(link);
 			b.links.push(link);
 		}
+		// const friendSize = Object.entries(orgData.nodes).map(x => x[1]).map(y => (y.neighbors ? getTotalGDP(y.neighbors) + y.gdp : y.gdp) / orgData.total_gdp * 100 )
+		// console.log(friendSize.indexOf(Math.max(...friendSize)), Math.max(...friendSize))
 		return orgData
 	}, [])
 
@@ -174,8 +176,11 @@ function Graph({ size }) {
 		highlightLinks.clear()
 	}
 
-	function selectNodeFromSearch(node) {
-		handleNodeClick(data.nodes[node.value])
+	function handleSelectNodeFromSearch(alpha3) {
+		if (!alpha3) {
+			handleNodeClick(null)
+		}
+		handleNodeClick(data.nodes[alpha3])
 	}
 
 	return(
@@ -201,7 +206,7 @@ function Graph({ size }) {
 				<Search
 					curValue={hoverNode && {value: hoverNode.id, label: hoverNode.name}}
 					countriesList={countriesList}
-					onSelect={selectNodeFromSearch}
+					onSelect={handleSelectNodeFromSearch}
 				/>
 			}
 			{graphLoaded && hoverNode &&
