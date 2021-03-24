@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import IconButton from '@material-ui/core/IconButton';
+import { matchSorter } from 'match-sorter';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -107,9 +108,10 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
           }}
           renderOption={renderOption}
           renderInput={renderInput}
-          filterOptions={createFilterOptions({
-            stringify: option => option.name
-          })}
+          // filterOptions={createFilterOptions({
+          //   stringify: option => option.name
+          // })}
+          filterOptions={(options, { inputValue }) => matchSorter(options, inputValue, {keys: ['name', 'id']})}
         />
         {selection && 
           <div className="details">
