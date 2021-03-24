@@ -89,8 +89,8 @@ export default function InfoBox({ data, worldGDP, selection, setSelection }) {
           clearOnEscape
           autoSelect
           autoHighlight
-          getOptionLabel={(option) => {
-            return data[option] ? data[option].name : ""
+          getOptionLabel={(optionStr) => {
+            return data[optionStr] ? data[optionStr].name : ""
           }}
           getOptionSelected={(option, value) => {
             return option.id === value
