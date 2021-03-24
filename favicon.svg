@@ -4,7 +4,7 @@
     .yay{fill:#20635d;}
     @media (prefers-color-scheme: dark) {
         .yay {
-            fill: #fff;
+            fill: #ffab40;
         }
     }
 </style>
