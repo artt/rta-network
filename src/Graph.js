@@ -37,13 +37,13 @@ function getColorFromSubregion(subregion) {
 	}
 }
 
-function Graph({ data, rtas, selection, setSelection, size, fgRef }) {
+function Graph({ data, rtas, selection, setSelection, highlightNodes, setHighlightNodes, highlightLinks, setHighlightLinks, size, fgRef }) {
 
   const fullHeight = use100vh() || size.height
 
 	const [hoverNode, setHoverNode] = React.useState(null);
-	const [highlightNodes, setHighlightNodes] = React.useState(new Set());
-	const [highlightLinks, setHighlightLinks] = React.useState(new Set());
+	// const [highlightNodes, setHighlightNodes] = React.useState(new Set());
+	// const [highlightLinks, setHighlightLinks] = React.useState(new Set());
 	const [graphLoaded, setGraphLoaded] = React.useState(false);
 
 	function drawNode(node) {

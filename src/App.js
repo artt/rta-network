@@ -30,15 +30,21 @@ function App() {
   }, [])
 
   const [selection, setSelection] = React.useState("")
+  const [highlightNodes, setHighlightNodes] = React.useState(new Set());
+	const [highlightLinks, setHighlightLinks] = React.useState(new Set());
 	const fgRef = React.useRef();
 
+  const average = (arr) => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+
   function focusNode() {
-    const node = data.nodes[selection]
-    console.log(node)
+    const hn = [...highlightNodes]
+    const centroidX = average(hn.map(node => node.x))
+    const centroidY = average(hn.map(node => node.y))
+    const centroidZ = average(hn.map(node => node.z))
     const distance = 800
-		const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z)
+		const distRatio = 1 + distance / Math.hypot(centroidX, centroidY, centroidZ)
 		fgRef.current.cameraPosition(
-			{ x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+			{ x: centroidX * distRatio, y: centroidY * distRatio, z: centroidZ * distRatio },
 			{ x: 0, y: 0, z: 0 },
 			3000
 		)
@@ -51,6 +57,10 @@ function App() {
         rtas={orgRTAs}
         selection={selection}
         setSelection={setSelection}
+        highlightNodes={highlightNodes}
+        setHighlightNodes={setHighlightNodes}
+        highlightLinks={highlightLinks}
+        setHighlightLinks={setHighlightLinks}
         fgRef={fgRef}
       />
       <InfoBox
