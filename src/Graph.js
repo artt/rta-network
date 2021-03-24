@@ -1,8 +1,6 @@
 import React from "react"
 import ForceGraph3D from "react-force-graph-3d"
-// import orgData from "./data.json"
 import { use100vh } from "react-div-100vh"
-// import rtas from "./rtas.json"
 import { forceX, forceY, forceZ } from 'd3-force-3d'
 import * as THREE from 'three'
 import { withSize } from 'react-sizeme'

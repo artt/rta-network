@@ -37,7 +37,7 @@ function getTotalGDP(node) {
 }
 
 
-export default function InfoBox({ data, worldGDP, selection, setSelection, focusNode }) {
+export default function InfoBox({ countries, rtas, worldGDP, selection, setSelection, focusNode }) {
 
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
@@ -81,7 +81,8 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
     )
   }
 
-  const processedData = Object.values(data).map(node => ({id: node.id, name: node.name, alpha3: node.alpha3, region: node.region, subregion: node.subregion}))
+  const processedCountries = 
+    Object.values(countries).map(node => ({id: node.id, name: node.name, alpha3: node.alpha3, region: node.region, subregion: node.subregion}))
 
   return(
     <div className="infobox">
@@ -96,12 +97,12 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
           onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
           size="small"
           style={{ width: 300 }}
-          options={processedData}
+          options={processedCountries}
           clearOnEscape
           autoSelect
           autoHighlight
           getOptionLabel={(optionStr) => {
-            return data[optionStr] ? data[optionStr].name : ""
+            return countries[optionStr] ? countries[optionStr].name : ""
           }}
           getOptionSelected={(option, value) => {
             return option.id === value
@@ -115,15 +116,15 @@ export default function InfoBox({ data, worldGDP, selection, setSelection, focus
         />
         {selection && 
           <div className="details">
-            <div>RTAs: {data[selection].neighbors
+            <div>RTAs: {countries[selection].neighbors
               ? <React.Fragment>
-                  {getNumRTAs(data[selection].links)}
+                  {getNumRTAs(countries[selection].links)}
                 </React.Fragment>
               : 0}
             </div>
-            <div>Neighbors: {data[selection].neighbors
+            <div>Neighbors: {countries[selection].neighbors
               ? <React.Fragment>
-                  {data[selection].neighbors.size} ({(getTotalGDP(data[selection]) / worldGDP * 100).toFixed(2)}% of World GDP, including itself)
+                  {countries[selection].neighbors.size} ({(getTotalGDP(countries[selection]) / worldGDP * 100).toFixed(2)}% of World GDP, including itself)
                 </React.Fragment>
               : 0}
             </div>

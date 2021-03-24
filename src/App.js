@@ -53,7 +53,8 @@ function App() {
         fgRef={fgRef}
       />
       <InfoBox
-        data={data.nodes}
+        countries={data.nodes}
+        rtas={orgRTAs}
         worldGDP={orgData.total_gdp}
         selection={selection}
         setSelection={setSelection}
