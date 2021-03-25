@@ -141,8 +141,12 @@ function Graph({ data, rtas, selection, setSelection, highlightNodes, setHighlig
 		fgRef.current.d3Force('charge').strength(-150);
 	}, [graphLoaded]);
 
+	function foo() {
+		document.activeElement.blur()
+	}
+
 	return(
-		<div id="canvas">
+		<div id="canvas" onClick={foo}>
 			{!graphLoaded &&
 					<div className="center full">
 						<div>

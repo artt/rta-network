@@ -84,8 +84,12 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
             {`GDP: ${formatGDP(node.gdp)} USD (${node.gdpyear} estimate)`}<br />
           </React.Fragment>
         }
-        {`${getRTAs(node).size} RTA${getRTAs(node).size > 1 ? "s" : ""} covering ${node.neighbors.size} ${node.neighbors.size > 1 ? "countries" : "country"}`}<br />
-        {`Total coverage: ${getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)`}
+        {node.neighbors &&
+          <React.Fragment>
+            {`${getRTAs(node).size} RTA${getRTAs(node).size > 1 ? "s" : ""} covering ${node.neighbors.size} ${node.neighbors.size > 1 ? "countries" : "country"}`}<br />
+            {`Total coverage: ${getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)`}
+          </React.Fragment>
+        }
       </React.Fragment>
     )
   }
@@ -93,8 +97,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
   function RTAText({ rta }) {
     return(
       <React.Fragment>
-        {`${rta.countries.length} countries (${getShareGDPFromCountriesList(rta.countries).toFixed(2)}% of World GDP)`}<br />
-        Type: {rta.type}
+        {`${rta.type} covering ${rta.countries.length} countries (${getShareGDPFromCountriesList(rta.countries).toFixed(2)}% of World GDP)`}<br />
       </React.Fragment>
     )
   }
@@ -318,6 +321,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
         onChange={(event, newValue) => {
           setValue(newValue);
           setSelection(newValue ? newValue.id : "")
+          document.activeElement.blur()
         }}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
@@ -355,19 +359,16 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
         <div className="details">
           {selection.length === 2 && // country selected
             <React.Fragment>
-              {countries[selection].neighbors
-                ? <React.Fragment>
-                    <CountryText node={countries[selection]} />
-                    <div className="space-top">
-                      <Button size="small" onClick={handleMoreCountryDetails}>
-                        More details
-                      </Button>
-                    </div>
-                    <CountryDialog node={countries[selection]} />
-                  </React.Fragment>
-                : <React.Fragment>
-                    No RTAs
-                  </React.Fragment>
+              <CountryText node={countries[selection]} />
+              {countries[selection].neighbors &&
+                <React.Fragment>
+                  <div className="space-top">
+                    <Button size="small" onClick={handleMoreCountryDetails}>
+                      More details
+                    </Button>
+                  </div>
+                  <CountryDialog node={countries[selection]} />
+                </React.Fragment>
               }
             </React.Fragment>
           }
