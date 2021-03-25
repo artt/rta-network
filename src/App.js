@@ -78,6 +78,12 @@ function App() {
           setHighlightLinks={setHighlightLinks}
           fgRef={fgRef}
         />
+        <GithubCorner
+          href="https://github.com/artt/rta-network"
+          target="_blank"
+          rel="noopener noreferrer"
+          bannerColor="#20635d"
+        />
         <InfoBox
           countries={data.nodes}
           rtas={orgRTAs}
@@ -85,12 +91,6 @@ function App() {
           selection={selection}
           setSelection={setSelection}
           focusNode={focusNode}
-        />
-        <GithubCorner
-          href="https://github.com/artt/rta-network"
-          target="_blank"
-          rel="noopener noreferrer"
-          bannerColor="#20635d"
         />
       </ThemeProvider>
     </div>
