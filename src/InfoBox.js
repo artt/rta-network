@@ -28,6 +28,19 @@ function getRTAs(node) {
   return allRTAs
 }
 
+function formatGDP(gdp) {
+  let x = gdp / 1e6
+  if (x < 1e3) {
+    return `${x.toFixed(2)} million`
+  }
+  else if (x < 1e6) {
+    return `${(x / 1e3).toFixed(2)} billion`
+  }
+  else {
+    return `${(x / 1e6).toFixed(2)} trillion`
+  }
+}
+
 function getFlagFromAlpha2(alpha2) {
 	return alpha2.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0)+127397))
 }
@@ -36,7 +49,8 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
 
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
-  const [dialogueOpen, setDialogueOpen] = React.useState(false);
+  const [countryDialogOpen, setCountryDialogOpen] = React.useState(false);
+  const [rtaDialogOpen, setRTADialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (selection)
@@ -54,12 +68,12 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     return list.map(code => countries[code]).map(country => country.gdp).reduce((a, b) => a + b, 0) / worldGDP * 100
   }
 
-  function handleClose() {
-    setDialogueOpen(false)
+  function handleMoreCountryDetails() {
+    setCountryDialogOpen(true)
   }
 
-  function handleMoreDetials() {
-    setDialogueOpen(true)
+  function handleMoreRTADetails() {
+    setRTADialogOpen(true)
   }
 
   function CountryText({ node }) {
@@ -71,6 +85,26 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     )
   }
 
+  function RTAText({ rta }) {
+    return(
+      <React.Fragment>
+        {`${rta.countries.length} countries (${getShareGDPFromCountriesList(rta.countries).toFixed(2)}% of World GDP)`}<br />
+        Type: {rta.type}
+      </React.Fragment>
+    )
+  }
+
+  function handleRTATableClick(index) {
+    // console.log(index)
+    setCountryDialogOpen(false)
+    setSelection(`RTA-${index}`)
+  }
+
+  function handleCountryTableClick(alpha2) {
+    setRTADialogOpen(false)
+    setSelection(alpha2)
+  }
+
   function CountryDialog({ node }) {
     const curRTAs = [...getRTAs(node)]
     const [page, setPage] = React.useState(0);
@@ -78,9 +112,9 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, curRTAs.length - page * rowsPerPage);
     return(
       <Dialog
-        onClose={handleClose}
+        onClose={() => setCountryDialogOpen(false)}
         aria-labelledby="simple-dialog-title"
-        open={dialogueOpen}
+        open={countryDialogOpen}
         fullWidth
         maxWidth="sm"
       >
@@ -98,10 +132,14 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {curRTAs.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((row, i) => {
-                    const curRTA = rtas[row]
+                  {curRTAs.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((rtaIndex, i) => {
+                    const curRTA = rtas[rtaIndex]
                     return(
-                      <TableRow key={`row${i}`}>
+                      <TableRow
+                        hover
+                        onClick={e => handleRTATableClick(rtaIndex)}
+                        key={`row${i}`}
+                      >
                         <TableCell component="th" scope="row">
                           {curRTA.rta}
                         </TableCell>
@@ -120,6 +158,86 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                   <TableRow>
                     <TablePagination
                       count={curRTAs.length}
+                      page={page}
+                      rowsPerPage={rowsPerPage}
+                      rowsPerPageOptions={[]}
+                      onChangePage={(event, newPage) => setPage(newPage)}
+                    />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          </DialogContentText>  
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  function RTADialog({ rta }) {
+    console.log(rta)
+    const [page, setPage] = React.useState(0);
+    const rowsPerPage = 10
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, curRTAs.length - page * rowsPerPage);
+    return(
+      <Dialog
+        onClose={() => setRTADialogOpen(false)}
+        aria-labelledby="simple-dialog-title"
+        open={rtaDialogOpen}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle id="simple-dialog-title">{rta.rta}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <RTAText rta={rta} />
+            <TableContainer>
+              <Table aria-label="simple table" size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ width: 10 }} />
+                    <TableCell>Country</TableCell>
+                    <TableCell align="center" style={{ width: 140 }}>GDP (USD)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rta.countries.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((alpha2, i) => {
+                    const curCountry = countries[alpha2]
+                    return(
+                      <TableRow
+                        hover
+                        onClick={e => handleCountryTableClick(alpha2)}
+                        key={`row${i}`}
+                      >
+                        <TableCell>
+                          {getFlagFromAlpha2(curCountry.id)}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {curCountry.name}
+                        </TableCell>
+                        <TableCell align="center">
+                          {curCountry.gdpyear !== 0
+                          ? <React.Fragment>
+                              {formatGDP(curCountry.gdp)}
+                              {/* <br />{curCountry.gdpyear} */}
+                            </React.Fragment>
+                          : <React.Fragment>
+                              –
+                            </React.Fragment>
+                          }
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                  {/* {emptyRows > 0 && (
+                    <TableRow style={{ height: 33 * emptyRows }}>
+                      <TableCell colSpan={3} />
+                    </TableRow>
+                  )} */}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      count={rta.countries.length}
                       page={page}
                       rowsPerPage={rowsPerPage}
                       rowsPerPageOptions={[]}
@@ -232,7 +350,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                 ? <React.Fragment>
                     <CountryText node={countries[selection]} />
                     <div className="space-top">
-                      <Button color="link" size="sm" onClick={handleMoreDetials}>
+                      <Button size="small" onClick={handleMoreCountryDetails}>
                         More details
                       </Button>
                     </div>
@@ -246,8 +364,13 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
           }
           {selection.length > 2 && // rta selected
             <React.Fragment>
-              <div>Countries: {rtas[parseInt(selection.slice(4))].countries.length} ({getShareGDPFromCountriesList(rtas[parseInt(selection.slice(4))].countries).toFixed(2)}% of World GDP)</div>
-              <div>Type: {rtas[parseInt(selection.slice(4))].type}</div>
+              <RTAText rta={rtas[parseInt(selection.slice(4))]} />
+              <div className="space-top">
+                <Button size="small" onClick={handleMoreRTADetails}>
+                  More details
+                </Button>
+              </div>
+              <RTADialog rta={rtas[parseInt(selection.slice(4))]} />
             </React.Fragment> 
           }
         </div>
