@@ -5,6 +5,21 @@ import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import IconButton from '@material-ui/core/IconButton';
 import { matchSorter } from 'match-sorter';
 
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableFooter from '@material-ui/core/TableFooter';
+import TableRow from '@material-ui/core/TableRow';
+import TablePagination from '@material-ui/core/TablePagination';
+
 function getRTAs(node) {
   let allRTAs = new Set()
   node.links.forEach(link => {
@@ -21,6 +36,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
 
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState('');
+  const [dialogueOpen, setDialogueOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (selection)
@@ -34,9 +50,64 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     return (neighborsGDP + node.gdp) / worldGDP * 100
   }
   
-
   function getShareGDPFromCountriesList(list) {
     return list.map(code => countries[code]).map(country => country.gdp).reduce((a, b) => a + b, 0) / worldGDP * 100
+  }
+
+  function handleClose() {
+    setDialogueOpen(false)
+  }
+
+  function handleMoreDetials() {
+    setDialogueOpen(true)
+  }
+
+  function CountryDialog({ node }) {
+    console.log(getRTAs(node))
+    return(
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="simple-dialog-title"
+        open={dialogueOpen}
+      >
+        <DialogTitle id="simple-dialog-title">{node.name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            RTAs
+            <TableContainer>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Type</TableCell>
+                    <TableCell>Members</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {[...getRTAs(node)].map((row, i) => {
+                    const curRTA = rtas[row]
+                    return(
+                      <TableRow key={`row${i}`}>
+                        <TableCell component="th" scope="row">
+                          {curRTA.rta}
+                        </TableCell>
+                        <TableCell>{curRTA.type}</TableCell>
+                        <TableCell>{curRTA.countries}</TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          </DialogContentText>  
+        </DialogContent>
+      </Dialog>
+    )
   }
 
   function renderOption(option) {
@@ -164,6 +235,10 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                   </React.Fragment>
                 : 0}
               </div>
+              <Button color="primary" onClick={handleMoreDetials}>
+                More details
+              </Button>
+              <CountryDialog node={countries[selection]} />
             </React.Fragment>
           }
           {selection.length > 2 && // rta selected
