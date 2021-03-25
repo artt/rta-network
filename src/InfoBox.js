@@ -19,12 +19,12 @@ const theme = createMuiTheme({
   }
 });
 
-function getNumRTAs(linkArray) {
+function getRTAs(node) {
   let allRTAs = new Set()
-  linkArray.forEach(link => {
+  node.links.forEach(link => {
     allRTAs = new Set([...allRTAs, ...link.rtas])
   })
-  return allRTAs.size
+  return allRTAs
 }
 
 function getFlagFromAlpha2(alpha2) {
@@ -102,7 +102,27 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     subregion: node.subregion
   }))
 
-  console.log(selection && countries[selection])
+  // function RTADetails({ node }) {
+  //   const nodeRTAs = getRTAs(node)
+  //   console.log(rtas)
+  //   return(
+  //     <div>
+  //       RTAs: {nodeRTAs.size}
+  //       <div>
+  //         {[...nodeRTAs].map(rtaNum => {
+  //           const curRTA = rtas[rtaNum]
+  //           return(
+  //             <div>
+  //               {curRTA.rta}
+  //             </div>
+  //           )
+  //         })}
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
+  console.log(countries[selection])
 
   return(
     <div className="infobox">
@@ -150,12 +170,10 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
           <div className="details">
             {selection.length === 2 && // country selected
               <React.Fragment>
-                <div>RTAs: {countries[selection].neighbors
-                  ? <React.Fragment>
-                      {getNumRTAs(countries[selection].links)}
-                    </React.Fragment>
-                  : 0}
-                </div>
+                {countries[selection].neighbors
+                  ? <div>RTAs: {getRTAs(countries[selection]).size}</div>
+                  : <div>RTAs: 0</div>
+                }
                 <div>Neighbors: {countries[selection].neighbors
                   ? <React.Fragment>
                       {countries[selection].neighbors.size} ({getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)
