@@ -79,8 +79,13 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
   function CountryText({ node }) {
     return(
       <React.Fragment>
-        {`${[...getRTAs(node)].length} RTAs covering ${node.neighbors.size} countries`}<br />
-        {`Total coverage: ${getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)}`}
+        {node.gdpyear > 0 && 
+          <React.Fragment>
+            {`GDP: ${formatGDP(node.gdp)} USD (${node.gdpyear} estimate)`}<br />
+          </React.Fragment>
+        }
+        {`${getRTAs(node).size} RTA${getRTAs(node).size > 1 ? "s" : ""} covering ${node.neighbors.size} ${node.neighbors.size > 1 ? "countries" : "country"}`}<br />
+        {`Total coverage: ${getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)`}
       </React.Fragment>
     )
   }
@@ -154,17 +159,19 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                     </TableRow>
                   )} */}
                 </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TablePagination
-                      count={curRTAs.length}
-                      page={page}
-                      rowsPerPage={rowsPerPage}
-                      rowsPerPageOptions={[]}
-                      onChangePage={(event, newPage) => setPage(newPage)}
-                    />
-                  </TableRow>
-                </TableFooter>
+                {curRTAs.length > rowsPerPage &&
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        count={curRTAs.length}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        rowsPerPageOptions={[]}
+                        onChangePage={(event, newPage) => setPage(newPage)}
+                      />
+                    </TableRow>
+                  </TableFooter>
+                }
               </Table>
             </TableContainer>
           </DialogContentText>  
@@ -234,17 +241,19 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                     </TableRow>
                   )} */}
                 </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TablePagination
-                      count={rta.countries.length}
-                      page={page}
-                      rowsPerPage={rowsPerPage}
-                      rowsPerPageOptions={[]}
-                      onChangePage={(event, newPage) => setPage(newPage)}
-                    />
-                  </TableRow>
-                </TableFooter>
+                {rta.countries.length > rowsPerPage &&
+                  <TableFooter>
+                    <TableRow>
+                      <TablePagination
+                        count={rta.countries.length}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        rowsPerPageOptions={[]}
+                        onChangePage={(event, newPage) => setPage(newPage)}
+                      />
+                    </TableRow>
+                  </TableFooter>
+                }
               </Table>
             </TableContainer>
           </DialogContentText>  
