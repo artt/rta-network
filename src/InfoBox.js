@@ -181,7 +181,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
   }
 
   function RTADialog({ rta }) {
-    console.log(rta)
+    // console.log(rta)
     const [page, setPage] = React.useState(0);
     const rowsPerPage = 10
     // const emptyRows = rowsPerPage - Math.min(rowsPerPage, curRTAs.length - page * rowsPerPage);
