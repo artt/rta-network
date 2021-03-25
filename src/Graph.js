@@ -4,6 +4,7 @@ import { use100vh } from "react-div-100vh"
 import { forceX, forceY, forceZ } from 'd3-force-3d'
 import * as THREE from 'three'
 import { withSize } from 'react-sizeme'
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 function inverseSphereVolume(vol) {
 	return Math.pow(3 / (4*Math.PI) * vol, 1/3)
@@ -142,7 +143,14 @@ function Graph({ data, rtas, selection, setSelection, highlightNodes, setHighlig
 
 	return(
 		<div id="canvas">
-			{!graphLoaded && <div className="center full">Loading stuff...</div>}
+			{!graphLoaded &&
+					<div className="center full">
+						<div>
+							<div>Loading stuff...</div>
+							<div className="space-top"><LinearProgress /></div>
+						</div>
+					</div>
+			}
 			<ForceGraph3D
 				ref={fgRef}
 				width={size.width}

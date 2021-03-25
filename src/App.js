@@ -6,6 +6,8 @@ import GithubCorner from 'react-github-corner';
 import orgData from "./data.json"
 import orgRTAs from "./rtas.json"
 
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+
 function App() {
 
   const data = React.useMemo(() => {
@@ -50,33 +52,47 @@ function App() {
 		)
   }
 
+  const theme = createMuiTheme({
+    palette: {
+      type: "dark",
+      primary: {
+        main: "#20635d",
+      },
+      secondary: {
+        main: "#ffab40",
+      },
+    }
+  })
+
   return (
     <div className="App">
-      <Graph
-        data={data}
-        rtas={orgRTAs}
-        selection={selection}
-        setSelection={setSelection}
-        highlightNodes={highlightNodes}
-        setHighlightNodes={setHighlightNodes}
-        highlightLinks={highlightLinks}
-        setHighlightLinks={setHighlightLinks}
-        fgRef={fgRef}
-      />
-      <InfoBox
-        countries={data.nodes}
-        rtas={orgRTAs}
-        worldGDP={orgData.total_gdp}
-        selection={selection}
-        setSelection={setSelection}
-        focusNode={focusNode}
-      />
-      <GithubCorner
-      	href="https://github.com/artt/rta-network"
-      	target="_blank"
-      	rel="noopener noreferrer"
-      	bannerColor="#20635d"
-      />
+      <ThemeProvider theme={theme}>
+        <Graph
+          data={data}
+          rtas={orgRTAs}
+          selection={selection}
+          setSelection={setSelection}
+          highlightNodes={highlightNodes}
+          setHighlightNodes={setHighlightNodes}
+          highlightLinks={highlightLinks}
+          setHighlightLinks={setHighlightLinks}
+          fgRef={fgRef}
+        />
+        <InfoBox
+          countries={data.nodes}
+          rtas={orgRTAs}
+          worldGDP={orgData.total_gdp}
+          selection={selection}
+          setSelection={setSelection}
+          focusNode={focusNode}
+        />
+        <GithubCorner
+          href="https://github.com/artt/rta-network"
+          target="_blank"
+          rel="noopener noreferrer"
+          bannerColor="#20635d"
+        />
+      </ThemeProvider>
     </div>
   );
 }

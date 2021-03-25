@@ -5,20 +5,6 @@ import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import IconButton from '@material-ui/core/IconButton';
 import { matchSorter } from 'match-sorter';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-
-const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-    primary: {
-      main: "#20635d",
-    },
-    secondary: {
-      main: "#ffab40",
-    },
-  }
-});
-
 function getRTAs(node) {
   let allRTAs = new Set()
   node.links.forEach(link => {
@@ -126,71 +112,68 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
 
   return(
     <div className="infobox">
-      <ThemeProvider theme={theme}>
-        <Autocomplete
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-            setSelection(newValue ? newValue.id : "")
-          }}
-          inputValue={inputValue}
-          onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-          size="small"
-          style={{ width: 300 }}
-          // options={processedCountries}
-          options={processedCountries.concat(processedRTAs)}
-          groupBy={(option) => option.group}
-          clearOnEscape
-          autoSelect
-          autoHighlight
-          getOptionLabel={(option) => {
-            if (typeof option === "object")
-              option = option.id
-            if (option.length === 2)
-              return countries[option] ? countries[option].name : ""
-            else {
-              const rtaID = parseInt(option.slice(4))
-              return rtas[rtaID] ? rtas[rtaID].rta : ""
-            }
-          }}
-          getOptionSelected={(option, value) => {
-            if (typeof value === "object")
-              value = value.id
-            return option.id === value
-          }}
-          renderOption={renderOption}
-          renderInput={renderInput}
-          filterOptions={(options, { inputValue }) => {
-            const rankCountries = matchSorter(options.filter(item => item.group === "Countries"), inputValue, {keys: ['name', 'id', 'alpha3']})
-            const rankRTAs = matchSorter(options.filter(item => item.group === "RTAs"), inputValue, {keys: ['name']})
-            return rankCountries.concat(rankRTAs)
-          }}
-        />
-        {selection &&
-          <div className="details">
-            {selection.length === 2 && // country selected
-              <React.Fragment>
-                {countries[selection].neighbors
-                  ? <div>RTAs: {getRTAs(countries[selection]).size}</div>
-                  : <div>RTAs: 0</div>
-                }
-                <div>Neighbors: {countries[selection].neighbors
-                  ? <React.Fragment>
-                      {countries[selection].neighbors.size} ({getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)
-                    </React.Fragment>
-                  : 0}
-                </div>
-              </React.Fragment>
-            }
-            {selection.length > 2 && // rta selected
-              <React.Fragment>
-                <div>Countries: {rtas[parseInt(selection.slice(4))].countries.length} ({getShareGDPFromCountriesList(rtas[parseInt(selection.slice(4))].countries).toFixed(2)}% of World GDP)</div>
-                <div>Type: {rtas[parseInt(selection.slice(4))].type}</div>
-              </React.Fragment> 
-            }
-          </div>
-        }
-      </ThemeProvider>
+      <Autocomplete
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+          setSelection(newValue ? newValue.id : "")
+        }}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+        size="small"
+        style={{ width: 300 }}
+        options={processedCountries.concat(processedRTAs)}
+        groupBy={(option) => option.group}
+        clearOnEscape
+        autoSelect
+        autoHighlight
+        getOptionLabel={(option) => {
+          if (typeof option === "object")
+            option = option.id
+          if (option.length === 2)
+            return countries[option] ? countries[option].name : ""
+          else {
+            const rtaID = parseInt(option.slice(4))
+            return rtas[rtaID] ? rtas[rtaID].rta : ""
+          }
+        }}
+        getOptionSelected={(option, value) => {
+          if (typeof value === "object")
+            value = value.id
+          return option.id === value
+        }}
+        renderOption={renderOption}
+        renderInput={renderInput}
+        filterOptions={(options, { inputValue }) => {
+          const rankCountries = matchSorter(options.filter(item => item.group === "Countries"), inputValue, {keys: ['name', 'id', 'alpha3']})
+          const rankRTAs = matchSorter(options.filter(item => item.group === "RTAs"), inputValue, {keys: ['name']})
+          return rankCountries.concat(rankRTAs)
+        }}
+      />
+      {selection &&
+        <div className="details">
+          {selection.length === 2 && // country selected
+            <React.Fragment>
+              {countries[selection].neighbors
+                ? <div>RTAs: {getRTAs(countries[selection]).size}</div>
+                : <div>RTAs: 0</div>
+              }
+              <div>Neighbors: {countries[selection].neighbors
+                ? <React.Fragment>
+                    {countries[selection].neighbors.size} ({getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)
+                  </React.Fragment>
+                : 0}
+              </div>
+            </React.Fragment>
+          }
+          {selection.length > 2 && // rta selected
+            <React.Fragment>
+              <div>Countries: {rtas[parseInt(selection.slice(4))].countries.length} ({getShareGDPFromCountriesList(rtas[parseInt(selection.slice(4))].countries).toFixed(2)}% of World GDP)</div>
+              <div>Type: {rtas[parseInt(selection.slice(4))].type}</div>
+            </React.Fragment> 
+          }
+        </div>
+      }
     </div>
   )
 
