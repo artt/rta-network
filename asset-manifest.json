@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/rta-network/static/css/main.7d125ff9.chunk.css",
-    "main.js": "/rta-network/static/js/main.820cb561.chunk.js",
-    "main.js.map": "/rta-network/static/js/main.820cb561.chunk.js.map",
+    "main.js": "/rta-network/static/js/main.bed2d1a1.chunk.js",
+    "main.js.map": "/rta-network/static/js/main.bed2d1a1.chunk.js.map",
     "runtime-main.js": "/rta-network/static/js/runtime-main.5e6ec8f2.js",
     "runtime-main.js.map": "/rta-network/static/js/runtime-main.5e6ec8f2.js.map",
     "static/js/2.34dca473.chunk.js": "/rta-network/static/js/2.34dca473.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.5e6ec8f2.js",
     "static/js/2.34dca473.chunk.js",
     "static/css/main.7d125ff9.chunk.css",
-    "static/js/main.820cb561.chunk.js"
+    "static/js/main.bed2d1a1.chunk.js"
   ]
 }
