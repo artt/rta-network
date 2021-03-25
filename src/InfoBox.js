@@ -62,44 +62,69 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     setDialogueOpen(true)
   }
 
+  function CountryText({ node }) {
+    return(
+      <React.Fragment>
+        {`${[...getRTAs(node)].length} RTAs covering ${node.neighbors.size} countries`}<br />
+        {`Total coverage: ${getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)}`}
+      </React.Fragment>
+    )
+  }
+
   function CountryDialog({ node }) {
-    console.log(getRTAs(node))
+    const curRTAs = [...getRTAs(node)]
+    const [page, setPage] = React.useState(0);
+    const rowsPerPage = 10
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, curRTAs.length - page * rowsPerPage);
     return(
       <Dialog
         onClose={handleClose}
         aria-labelledby="simple-dialog-title"
         open={dialogueOpen}
+        fullWidth
+        maxWidth="sm"
       >
-        <DialogTitle id="simple-dialog-title">{node.name}</DialogTitle>
+        <DialogTitle id="simple-dialog-title"><span className="flag">{getFlagFromAlpha2(node.id)}</span>{node.name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            RTAs
+            <CountryText node={node} />
             <TableContainer>
-              <Table aria-label="simple table">
+              <Table aria-label="simple table" size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
-                    <TableCell>Type</TableCell>
-                    <TableCell>Members</TableCell>
+                    <TableCell align="center" style={{ width: 70 }}>Type</TableCell>
+                    <TableCell align="center" style={{ width: 30 }}>Countries</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {[...getRTAs(node)].map((row, i) => {
+                  {curRTAs.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((row, i) => {
                     const curRTA = rtas[row]
                     return(
                       <TableRow key={`row${i}`}>
                         <TableCell component="th" scope="row">
                           {curRTA.rta}
                         </TableCell>
-                        <TableCell>{curRTA.type}</TableCell>
-                        <TableCell>{curRTA.countries}</TableCell>
+                        <TableCell align="center">{curRTA.type}</TableCell>
+                        <TableCell align="center">{curRTA.countries.length}</TableCell>
                       </TableRow>
                     )
                   })}
+                  {/* {emptyRows > 0 && (
+                    <TableRow style={{ height: 33 * emptyRows }}>
+                      <TableCell colSpan={3} />
+                    </TableRow>
+                  )} */}
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TablePagination />
+                    <TablePagination
+                      count={curRTAs.length}
+                      page={page}
+                      rowsPerPage={rowsPerPage}
+                      rowsPerPageOptions={[]}
+                      onChangePage={(event, newPage) => setPage(newPage)}
+                    />
                   </TableRow>
                 </TableFooter>
               </Table>
@@ -159,28 +184,6 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     subregion: node.subregion
   }))
 
-  // function RTADetails({ node }) {
-  //   const nodeRTAs = getRTAs(node)
-  //   console.log(rtas)
-  //   return(
-  //     <div>
-  //       RTAs: {nodeRTAs.size}
-  //       <div>
-  //         {[...nodeRTAs].map(rtaNum => {
-  //           const curRTA = rtas[rtaNum]
-  //           return(
-  //             <div>
-  //               {curRTA.rta}
-  //             </div>
-  //           )
-  //         })}
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
-  console.log(countries[selection])
-
   return(
     <div className="infobox">
       <Autocomplete
@@ -226,19 +229,19 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
           {selection.length === 2 && // country selected
             <React.Fragment>
               {countries[selection].neighbors
-                ? <div>RTAs: {getRTAs(countries[selection]).size}</div>
-                : <div>RTAs: 0</div>
-              }
-              <div>Neighbors: {countries[selection].neighbors
                 ? <React.Fragment>
-                    {countries[selection].neighbors.size} ({getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)
+                    <CountryText node={countries[selection]} />
+                    <div className="space-top">
+                      <Button color="link" size="sm" onClick={handleMoreDetials}>
+                        More details
+                      </Button>
+                    </div>
+                    <CountryDialog node={countries[selection]} />
                   </React.Fragment>
-                : 0}
-              </div>
-              <Button color="primary" onClick={handleMoreDetials}>
-                More details
-              </Button>
-              <CountryDialog node={countries[selection]} />
+                : <React.Fragment>
+                    No RTAs
+                  </React.Fragment>
+              }
             </React.Fragment>
           }
           {selection.length > 2 && // rta selected
