@@ -31,11 +31,6 @@ function getFlagFromAlpha2(alpha2) {
 	return alpha2.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0)+127397))
 }
 
-function getTotalGDP(node) {
-	const neighborsGDP = Array.from(node.neighbors).map(country => country.gdp).reduce((a, b) => a + b, 0)
-  return neighborsGDP + node.gdp
-}
-
 export default function InfoBox({ countries, rtas, worldGDP, selection, setSelection, focusNode }) {
 
   const [value, setValue] = React.useState(null);
@@ -48,7 +43,13 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
       setValue(null)
   }, [selection])
 
-  function getTotalGDPFromCountriesList(list) {
+  function getShareGDPFromNeighborsSet(node) {
+    const neighborsGDP = Array.from(node.neighbors).map(country => country.gdp).reduce((a, b) => a + b, 0)
+    return (neighborsGDP + node.gdp) / worldGDP * 100
+  }
+  
+
+  function getShareGDPFromCountriesList(list) {
     return list.map(code => countries[code]).map(country => country.gdp).reduce((a, b) => a + b, 0) / worldGDP * 100
   }
 
@@ -101,6 +102,8 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     subregion: node.subregion
   }))
 
+  console.log(selection && countries[selection])
+
   return(
     <div className="infobox">
       <ThemeProvider theme={theme}>
@@ -145,7 +148,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
         />
         {selection &&
           <div className="details">
-            {selection.length === 2 &&
+            {selection.length === 2 && // country selected
               <React.Fragment>
                 <div>RTAs: {countries[selection].neighbors
                   ? <React.Fragment>
@@ -155,15 +158,15 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
                 </div>
                 <div>Neighbors: {countries[selection].neighbors
                   ? <React.Fragment>
-                      {countries[selection].neighbors.size} ({(getTotalGDP(countries[selection]) / worldGDP * 100).toFixed(2)}% of World GDP, including itself)
+                      {countries[selection].neighbors.size} ({getShareGDPFromNeighborsSet(countries[selection]).toFixed(2)}% of World GDP, including itself)
                     </React.Fragment>
                   : 0}
                 </div>
               </React.Fragment>
             }
-            {selection.length > 2 &&
+            {selection.length > 2 && // rta selected
               <React.Fragment>
-                <div>Countries: {rtas[parseInt(selection.slice(4))].countries.length} ({getTotalGDPFromCountriesList(rtas[parseInt(selection.slice(4))].countries).toFixed(2)}% of World GDP)</div>
+                <div>Countries: {rtas[parseInt(selection.slice(4))].countries.length} ({getShareGDPFromCountriesList(rtas[parseInt(selection.slice(4))].countries).toFixed(2)}% of World GDP)</div>
                 <div>Type: {rtas[parseInt(selection.slice(4))].type}</div>
               </React.Fragment> 
             }
