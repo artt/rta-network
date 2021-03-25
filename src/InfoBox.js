@@ -196,7 +196,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle id="simple-dialog-title">{rta.rta}</DialogTitle>
+        <DialogTitle id="simple-dialog-title"><span className="flag">🌐</span>{rta.rta}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <RTAText rta={rta} />
@@ -268,7 +268,12 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
   function renderOption(option) {
     return(
       <React.Fragment>
-        {option.id.length === 2 && <span className="flag">{getFlagFromAlpha2(option.id)}</span>}
+        <span className="flag">
+          {option.id.length === 2
+          ? <React.Fragment>{getFlagFromAlpha2(option.id)}</React.Fragment>
+          : <React.Fragment>🌐</React.Fragment>
+          }
+        </span>
         {option.name}
       </React.Fragment>
     )

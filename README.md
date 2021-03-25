@@ -8,5 +8,5 @@ A link between two nodes indicates that there is at least one active [regional t
 
 ## Upcoming
 
-* More data on each country?
+* Sorting of stuff...
 * More customizable settings like particle color, link opacity, etc.
