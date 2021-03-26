@@ -1,6 +1,6 @@
 import React from "react"
 import TextField from '@material-ui/core/TextField';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import IconButton from '@material-ui/core/IconButton';
 import { matchSorter } from 'match-sorter';
@@ -117,7 +117,7 @@ export default function InfoBox({ countries, rtas, worldGDP, selection, setSelec
     const curRTAs = [...getRTAs(node)]
     const [page, setPage] = React.useState(0);
     const rowsPerPage = 10
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, curRTAs.length - page * rowsPerPage);
+    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, curRTAs.length - page * rowsPerPage);
     return(
       <Dialog
         onClose={() => setCountryDialogOpen(false)}

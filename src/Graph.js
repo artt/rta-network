@@ -96,7 +96,7 @@ function Graph({ data, rtas, selection, setSelection, highlightNodes, setHighlig
 		setHoverNode(null)
 		highlightNodes.clear();
 		highlightLinks.clear();
-		const countries = rtas[rtaID].countries
+		const countries = rtas[rtaID].countries.sort()
 		for (let i = 0; i < countries.length; i ++) {
 			highlightNodes.add(data.nodes[countries[i]])
 			for (let j = i + 1; j < countries.length; j ++) {
