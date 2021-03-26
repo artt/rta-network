@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/rta-network/static/css/main.7d125ff9.chunk.css",
-    "main.js": "/rta-network/static/js/main.9ff607b0.chunk.js",
-    "main.js.map": "/rta-network/static/js/main.9ff607b0.chunk.js.map",
+    "main.css": "/rta-network/static/css/main.9fdf0eab.chunk.css",
+    "main.js": "/rta-network/static/js/main.18267cd8.chunk.js",
+    "main.js.map": "/rta-network/static/js/main.18267cd8.chunk.js.map",
     "runtime-main.js": "/rta-network/static/js/runtime-main.5e6ec8f2.js",
     "runtime-main.js.map": "/rta-network/static/js/runtime-main.5e6ec8f2.js.map",
-    "static/js/2.34dca473.chunk.js": "/rta-network/static/js/2.34dca473.chunk.js",
-    "static/js/2.34dca473.chunk.js.map": "/rta-network/static/js/2.34dca473.chunk.js.map",
+    "static/js/2.1d3c97a6.chunk.js": "/rta-network/static/js/2.1d3c97a6.chunk.js",
+    "static/js/2.1d3c97a6.chunk.js.map": "/rta-network/static/js/2.1d3c97a6.chunk.js.map",
     "static/js/3.e67a2571.chunk.js": "/rta-network/static/js/3.e67a2571.chunk.js",
     "static/js/3.e67a2571.chunk.js.map": "/rta-network/static/js/3.e67a2571.chunk.js.map",
     "index.html": "/rta-network/index.html",
-    "static/css/main.7d125ff9.chunk.css.map": "/rta-network/static/css/main.7d125ff9.chunk.css.map",
-    "static/js/2.34dca473.chunk.js.LICENSE.txt": "/rta-network/static/js/2.34dca473.chunk.js.LICENSE.txt"
+    "static/css/main.9fdf0eab.chunk.css.map": "/rta-network/static/css/main.9fdf0eab.chunk.css.map",
+    "static/js/2.1d3c97a6.chunk.js.LICENSE.txt": "/rta-network/static/js/2.1d3c97a6.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.5e6ec8f2.js",
-    "static/js/2.34dca473.chunk.js",
-    "static/css/main.7d125ff9.chunk.css",
-    "static/js/main.9ff607b0.chunk.js"
+    "static/js/2.1d3c97a6.chunk.js",
+    "static/css/main.9fdf0eab.chunk.css",
+    "static/js/main.18267cd8.chunk.js"
   ]
 }
