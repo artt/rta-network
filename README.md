@@ -10,5 +10,6 @@ A link between two nodes indicates that there is at least one active [regional t
 
 ## Upcoming
 
-* Sorting of stuff...
+* Sorting countries by name, not by alpha-2 codes
+* Use bloom for selected effects
 * More customizable settings like particle color, link opacity, etc.
