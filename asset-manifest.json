@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/rta-network/static/css/main.2343bcd8.css",
-    "main.js": "/rta-network/static/js/main.830efa66.js",
-    "static/js/453.301136f6.chunk.js": "/rta-network/static/js/453.301136f6.chunk.js",
-    "index.html": "/rta-network/index.html",
-    "main.2343bcd8.css.map": "/rta-network/static/css/main.2343bcd8.css.map",
-    "main.830efa66.js.map": "/rta-network/static/js/main.830efa66.js.map",
-    "453.301136f6.chunk.js.map": "/rta-network/static/js/453.301136f6.chunk.js.map"
+    "main.css": "/static/css/main.2343bcd8.css",
+    "main.js": "/static/js/main.7878d5e4.js",
+    "static/js/453.301136f6.chunk.js": "/static/js/453.301136f6.chunk.js",
+    "index.html": "/index.html",
+    "main.2343bcd8.css.map": "/static/css/main.2343bcd8.css.map",
+    "main.7878d5e4.js.map": "/static/js/main.7878d5e4.js.map",
+    "453.301136f6.chunk.js.map": "/static/js/453.301136f6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2343bcd8.css",
-    "static/js/main.830efa66.js"
+    "static/js/main.7878d5e4.js"
   ]
 }
